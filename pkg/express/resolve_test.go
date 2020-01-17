@@ -15,6 +15,8 @@ func TestResolveAddress_SepByComma(t *testing.T) {
 	)
 	unresolved := fmt.Sprintf("%s,%s,%s,%s", name, phone, detail, postalCode)
 	resolved := ResolveAddress(unresolved)
+	t.Logf("\n输入: %v\n输出: %+v\n", unresolved, resolved)
+
 	s := assert.New(t)
 	s.Equal(name, resolved.Name, "收货人名称解析失败")
 	s.Equal(phone, resolved.Phone, "收货人手机号码解析失败")
