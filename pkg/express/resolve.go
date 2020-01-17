@@ -39,14 +39,14 @@ func ResolveAddress(original string) Address {
 func CleanAddress(address string) (cleaned string) {
 	cleaned = controlSymbolRegexp.ReplaceAllLiteralString(address, slot)
 	cleaned = specialSymbolRegexp.ReplaceAllLiteralString(cleaned, slot)
-	for _, text := range GetFilteredTextPattern() {
+	for _, text := range GetCleanedTexts() {
 		cleaned = strings.ReplaceAll(cleaned, text, "")
 	}
 	return
 }
 
-// 获取要过滤掉的字符串
-func GetFilteredTextPattern() []string {
+// 获取要清理的字符串数组
+func GetCleanedTexts() []string {
 	return []string{"详细地址", "收货地址", "收件地址", "地址", "所在地区", "地区", "姓名", "收货人", "收件人", "联系人", "收", "邮编", "联系电话", "电话", "联系人手机号码", "手机号码", "手机号"}
 }
 
@@ -58,7 +58,7 @@ func removeDuplicatedSpaces(address string) string {
 // 筛选电话号码
 func FilterPhone(address string) (phone string, left string) {
 	left = address
-	address = unifyPhonePattern(address)
+	address = unifyPhone(address)
 	phone = phoneUnityRegexp.FindString(address)
 	if len(phone) == 0 {
 		return
@@ -67,10 +67,10 @@ func FilterPhone(address string) (phone string, left string) {
 	return
 }
 
-// 格式化电话号码成连续的11位数字
-func unifyPhonePattern(content string) string {
-	for _, pattern := range phoneCompatibleRegexps {
-		content = pattern.ReplaceAllLiteralString(content, "$1$2$3")
+// 统一字符串中的手机号码格式
+func unifyPhone(content string) string {
+	for _, exp := range phoneCompatibleRegexps {
+		content = exp.ReplaceAllLiteralString(content, "$1$2$3")
 	}
 	return content
 }
