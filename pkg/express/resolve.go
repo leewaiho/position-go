@@ -6,11 +6,6 @@ import (
 	"unicode/utf8"
 )
 
-const (
-	empty = ""
-	slot  = " "
-)
-
 // 解析快递收货地址
 func ResolveAddress(original string) Address {
 	var (
@@ -46,11 +41,6 @@ func CleanAddress(address string) (cleaned string) {
 	return
 }
 
-// 清理多余的空格
-func cleanDuplicatedSpaces(address string) string {
-	return duplicatedSpaceRegexp.ReplaceAllLiteralString(address, slot)
-}
-
 // 筛选电话号码
 func FilterPhone(address string) (phone string, left string) {
 	left = address
@@ -59,16 +49,8 @@ func FilterPhone(address string) (phone string, left string) {
 	if len(phone) == 0 {
 		return
 	}
-	left = strings.ReplaceAll(left, phone, empty)
+	left = deleteSubString(left, phone)
 	return
-}
-
-// 统一字符串中的手机号码格式
-func unifyPhone(content string) string {
-	for _, exp := range phoneCompatibleRegexps {
-		content = exp.ReplaceAllLiteralString(content, "$1$2$3")
-	}
-	return content
 }
 
 // 从收货地址中筛选收货人名称
@@ -82,17 +64,22 @@ func FilterName(addr string) (name string, left string) {
 		return len(splits[i]) < len(splits[j])
 	})
 	for i := range splits {
-		chip := splits[i]
-		charCount := utf8.RuneCountInString(chip)
-		if charCount <= 0 || charCount > getNameMaxLength() {
+		s := splits[i]
+		if !maybeName(s) {
 			continue
 		}
-		name = chip
+		name = s
 	}
 	if len(name) > 0 {
-		left = strings.ReplaceAll(left, name, empty)
+		left = deleteSubString(left, name)
 	}
 	return
+}
+
+// 可能是收货人名称
+func maybeName(chip string) bool {
+	lenOfChip := utf8.RuneCountInString(chip)
+	return lenOfChip > 0 && lenOfChip <= getNameMaxLength() && nameRegexp.MatchString(chip)
 }
 
 // 从收货地址中筛选邮政编码
@@ -102,6 +89,6 @@ func FilterPostalCode(addr string) (postalCode string, left string) {
 	if len(postalCode) == 0 {
 		return
 	}
-	left = strings.ReplaceAll(left, postalCode, empty)
+	left = deleteSubString(left, postalCode)
 	return
 }

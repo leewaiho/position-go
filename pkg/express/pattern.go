@@ -9,6 +9,7 @@ var (
 	specialSymbolRegexp    = regexp.MustCompile(getSpecialSymbolPattern())
 	duplicatedSpaceRegexp  = regexp.MustCompile(getDuplicatedSpacePattern())
 	postalCodeRegexp       = regexp.MustCompile(getPostalCodePattern())
+	nameRegexp             = regexp.MustCompile(getNamePattern())
 )
 
 // 获取模式: 手机兼容格式
@@ -52,4 +53,9 @@ func getCleanedTexts() []string {
 // 获取姓名的长度限制
 func getNameMaxLength() int {
 	return 5
+}
+
+// 获取模式: 中文名或者英文名
+func getNamePattern() string {
+	return "[\u4E00-\u9FA5|a-zA-Z]+"
 }
