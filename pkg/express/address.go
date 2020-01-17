@@ -1,6 +1,6 @@
 package express
 
-type Address struct {
+type ResolvedAddress struct {
 	Original   string `json:"original"`
 	Name       string `json:"name"`
 	Phone      string `json:"phone"`

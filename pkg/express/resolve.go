@@ -7,20 +7,20 @@ import (
 )
 
 // 解析快递收货地址
-func ResolveAddress(original string) Address {
+func ResolveAddress(original string) ResolvedAddress {
 	var (
 		name       string
 		phone      string
 		addr       string
 		postalCode string
 	)
-	addr = CleanAddress(original)
-	p := Address{
+	addr = cleanAddress(original)
+	p := ResolvedAddress{
 		Original: original,
 	}
-	phone, addr = FilterPhone(addr)
-	name, addr = FilterName(addr)
-	postalCode, addr = FilterPostalCode(addr)
+	phone, addr = filterPhone(addr)
+	name, addr = filterName(addr)
+	postalCode, addr = filterPostalCode(addr)
 
 	addr = strings.TrimSpace(addr)
 	p.Name = name
@@ -31,7 +31,7 @@ func ResolveAddress(original string) Address {
 }
 
 // 清理地址字符串中的多余字符
-func CleanAddress(address string) (cleaned string) {
+func cleanAddress(address string) (cleaned string) {
 	cleaned = controlSymbolRegexp.ReplaceAllLiteralString(address, slot)
 	cleaned = specialSymbolRegexp.ReplaceAllLiteralString(cleaned, slot)
 	for _, text := range getCleanedTexts() {
@@ -42,7 +42,7 @@ func CleanAddress(address string) (cleaned string) {
 }
 
 // 筛选电话号码
-func FilterPhone(address string) (phone string, left string) {
+func filterPhone(address string) (phone string, left string) {
 	left = address
 	address = unifyPhone(address)
 	phone = phoneUnityRegexp.FindString(address)
@@ -54,7 +54,7 @@ func FilterPhone(address string) (phone string, left string) {
 }
 
 // 从收货地址中筛选收货人名称
-func FilterName(addr string) (name string, left string) {
+func filterName(addr string) (name string, left string) {
 	left = addr
 	splits := strings.Split(addr, slot)
 	if len(splits) == 0 {
@@ -84,7 +84,7 @@ func maybeName(chip string) bool {
 }
 
 // 从收货地址中筛选邮政编码
-func FilterPostalCode(addr string) (postalCode string, left string) {
+func filterPostalCode(addr string) (postalCode string, left string) {
 	left = addr
 	postalCode = postalCodeRegexp.FindString(addr)
 	if len(postalCode) == 0 {
