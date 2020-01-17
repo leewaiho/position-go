@@ -39,19 +39,15 @@ func ResolveAddress(original string) Address {
 func CleanAddress(address string) (cleaned string) {
 	cleaned = controlSymbolRegexp.ReplaceAllLiteralString(address, slot)
 	cleaned = specialSymbolRegexp.ReplaceAllLiteralString(cleaned, slot)
-	for _, text := range GetCleanedTexts() {
+	for _, text := range getCleanedTexts() {
 		cleaned = strings.ReplaceAll(cleaned, text, "")
 	}
+	cleaned = cleanDuplicatedSpaces(cleaned)
 	return
 }
 
-// 获取要清理的字符串数组
-func GetCleanedTexts() []string {
-	return []string{"详细地址", "收货地址", "收件地址", "地址", "所在地区", "地区", "姓名", "收货人", "收件人", "联系人", "收", "邮编", "联系电话", "电话", "联系人手机号码", "手机号码", "手机号"}
-}
-
 // 清理多余的空格
-func removeDuplicatedSpaces(address string) string {
+func cleanDuplicatedSpaces(address string) string {
 	return duplicatedSpaceRegexp.ReplaceAllLiteralString(address, slot)
 }
 
@@ -63,7 +59,7 @@ func FilterPhone(address string) (phone string, left string) {
 	if len(phone) == 0 {
 		return
 	}
-	left = removeDuplicatedSpaces(strings.ReplaceAll(left, phone, empty))
+	left = strings.ReplaceAll(left, phone, empty)
 	return
 }
 
@@ -88,7 +84,7 @@ func FilterName(addr string) (name string, left string) {
 	for i := range splits {
 		chip := splits[i]
 		charCount := utf8.RuneCountInString(chip)
-		if charCount <= 0 || charCount > GetNameMaxLength() {
+		if charCount <= 0 || charCount > getNameMaxLength() {
 			continue
 		}
 		name = chip
@@ -97,11 +93,6 @@ func FilterName(addr string) (name string, left string) {
 		left = strings.ReplaceAll(left, name, empty)
 	}
 	return
-}
-
-// 获取姓名的长度限制
-func GetNameMaxLength() int {
-	return 5
 }
 
 // 从收货地址中筛选邮政编码
