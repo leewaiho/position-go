@@ -3,16 +3,16 @@ package express
 import "regexp"
 
 var (
-	controlSymbolFilteredRegexp   = regexp.MustCompile(GetControlSymbolPattern())
-	specialSymbolFilteredRegexp   = regexp.MustCompile(GetSpecialSymbolPattern())
-	duplicatedSpaceFilteredRegexp = regexp.MustCompile(GetDuplicatedSpacePattern())
-	postalCodeRegexp              = regexp.MustCompile(GetPostalCodePattern())
-	phoneCompatiblePatterns       = GetPhoneCompatiblePatterns()
-	phoneUnityPattern             = regexp.MustCompile(GetPhoneUnityPattern())
+	phoneCompatibleRegexps = GetPhoneCompatibleRegexps()
+	phoneUnityRegexp       = regexp.MustCompile(GetPhoneUnityPattern())
+	controlSymbolRegexp    = regexp.MustCompile(GetControlSymbolPattern())
+	specialSymbolRegexp    = regexp.MustCompile(GetSpecialSymbolPattern())
+	duplicatedSpaceRegexp  = regexp.MustCompile(GetDuplicatedSpacePattern())
+	postalCodeRegexp       = regexp.MustCompile(GetPostalCodePattern())
 )
 
 // 获取模式: 手机兼容格式
-func GetPhoneCompatiblePatterns() []*regexp.Regexp {
+func GetPhoneCompatibleRegexps() []*regexp.Regexp {
 	return []*regexp.Regexp{
 		regexp.MustCompile("(\\d{3})-(\\d{4})-(\\d{4})"),
 		regexp.MustCompile("(\\d{3}) (\\d{4}) (\\d{4})"),
