@@ -70,9 +70,10 @@ func FilterName(addr string) (name string, left string) {
 		}
 		name = s
 	}
-	if len(name) > 0 {
-		left = deleteSubString(left, name)
+	if len(name) == 0 {
+		return
 	}
+	left = deleteSubString(left, name)
 	return
 }
 
