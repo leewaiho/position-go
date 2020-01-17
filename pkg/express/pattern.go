@@ -2,9 +2,16 @@ package express
 
 import "regexp"
 
-// 手机兼容格式
-var phoneCompatiblePatterns = GetPhoneCompatiblePatterns()
+var (
+	controlSymbolFilteredRegexp   = regexp.MustCompile(GetControlSymbolPattern())
+	specialSymbolFilteredRegexp   = regexp.MustCompile(GetSpecialSymbolPattern())
+	duplicatedSpaceFilteredRegexp = regexp.MustCompile(GetDuplicatedSpacePattern())
+	postalCodeRegexp              = regexp.MustCompile(GetPostalCodePattern())
+	phoneCompatiblePatterns       = GetPhoneCompatiblePatterns()
+	phoneUnityPattern             = regexp.MustCompile(GetPhoneUnityPattern())
+)
 
+// 获取模式: 手机兼容格式
 func GetPhoneCompatiblePatterns() []*regexp.Regexp {
 	return []*regexp.Regexp{
 		regexp.MustCompile("(\\d{3})-(\\d{4})-(\\d{4})"),
@@ -12,19 +19,10 @@ func GetPhoneCompatiblePatterns() []*regexp.Regexp {
 	}
 }
 
-// 手机统一格式
-var phoneUnityPattern = regexp.MustCompile(GetPhoneUnityPattern())
-
+// 获取模式: 手机统一格式
 func GetPhoneUnityPattern() string {
 	return "(\\d{7,12})|(\\d{3,4}-\\d{6,8})|(86-[1][0-9]{10})|(86[1][0-9]{10})|([1][0-9]{10})"
 }
-
-var (
-	controlSymbolFilteredRegexp   = regexp.MustCompile(GetControlSymbolPattern())
-	specialSymbolFilteredRegexp   = regexp.MustCompile(GetSpecialSymbolPattern())
-	duplicatedSpaceFilteredRegexp = regexp.MustCompile(GetDuplicatedSpacePattern())
-	postalCodeRegexp              = regexp.MustCompile(GetPostalCodePattern())
-)
 
 // 获取模式: 控制字符
 func GetControlSymbolPattern() string {
